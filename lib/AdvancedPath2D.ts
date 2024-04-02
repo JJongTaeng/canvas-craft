@@ -1,10 +1,8 @@
 import { DrawType } from './DrawType.ts';
+import { Command } from './type.ts';
 
 export class AdvancedPath2D extends Path2D {
-  commandList: {
-    name: string;
-    params: {};
-  }[] = [];
+  commandList: Command[] = [];
   drawType: DrawType = new DrawType();
 
   arc(
@@ -169,10 +167,6 @@ export class AdvancedPath2D extends Path2D {
 
   clearCommandList() {
     this.commandList = [];
-  }
-
-  toJSON() {
-    return JSON.stringify(this.commandList);
   }
 
   make(

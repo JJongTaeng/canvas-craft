@@ -1,6 +1,8 @@
 import { DrawType } from './DrawType.ts';
 import { Shape } from './Shape.ts';
 import { PathManager } from './PathManager.ts';
+import { AdvancedPath2DData } from './type.ts';
+import { AdvancedPath2D } from './AdvancedPath2D.ts';
 
 export class CanvasCraft {
   private ctx: CanvasRenderingContext2D;
@@ -64,6 +66,24 @@ export class CanvasCraft {
   removeAll() {
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
     this.pathManager.clear();
+    this.redraw();
+  }
+
+  toArray(): AdvancedPath2DData[] {
+    return this.pathManager.toArray();
+  }
+
+  arrayToPath(advancedPath2DDataList: AdvancedPath2DData[]) {
+    const pathInfoList = advancedPath2DDataList.map((advancedPath2DData) => {
+      const path2D = new AdvancedPath2D();
+      path2D.make(advancedPath2DData.commandList);
+      return {
+        path: path2D,
+        drawType: advancedPath2DData.drawType,
+      };
+    });
+
+    this.pathManager.pathInfoList = pathInfoList;
     this.redraw();
   }
 

@@ -1,14 +1,10 @@
 import { AdvancedPath2D } from './AdvancedPath2D.ts';
 import { DrawType } from './DrawType.ts';
-
-interface PathInfo {
-  drawType: DrawType;
-  path: Path2D;
-}
+import { AdvancedPath2DData, PathInfo } from './type.ts';
 
 export class PathManager {
-  private undoPathList: PathInfo[] = [];
-  private pathInfoList: PathInfo[] = [];
+  undoPathList: PathInfo[] = [];
+  pathInfoList: PathInfo[] = [];
 
   merge() {
     const mergedPathInfoList: PathInfo[] = [];
@@ -64,5 +60,16 @@ export class PathManager {
   clear() {
     this.pathInfoList = [];
     this.undoPathList = [];
+  }
+
+  toArray(): AdvancedPath2DData[] {
+    return this.pathInfoList.map((pathInfo) => {
+      const path = pathInfo.path as AdvancedPath2D;
+      const commandList = path.commandList;
+      return {
+        commandList,
+        drawType: pathInfo.drawType,
+      };
+    });
   }
 }

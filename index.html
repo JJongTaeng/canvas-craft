@@ -8,12 +8,19 @@
   </head>
   <body>
     <div id="app">
-      <canvas width="300" height="300"></canvas>
-      <button class="remove">제거</button>
-      <button class="undo">undo</button>
-      <button class="redo">redo</button>
-      <button class="red">red</button>
-      <button class="blue">blue</button>
+      <div>
+        <canvas width="300" height="300"></canvas>
+      </div>
+      <div>
+        <button class="remove">제거</button>
+        <button class="undo">undo</button>
+        <button class="redo">redo</button>
+        <button class="red">red</button>
+        <button class="blue">blue</button>
+        <button class="copy">copy</button>
+      </div>
+      <hr>
+      <canvas class="copy-canvas" width="300" height="300"></canvas>
     </div>
     <script type="module" src="/src/main.ts"></script>
   </body>
