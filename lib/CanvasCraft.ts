@@ -38,6 +38,9 @@ export class CanvasCraft {
       case Shape.TRIANGLE:
         this.drawTriangle();
         break;
+      case Shape.ERASER:
+        this.erase(x, y);
+        break;
       default:
         throw new Error('Invaliad Draw Type');
     }
@@ -90,6 +93,17 @@ export class CanvasCraft {
   private applyDrawType() {
     this.ctx.lineWidth = this.drawType.lineWidth;
     this.ctx.strokeStyle = this.drawType.color;
+    if (this.drawType.shape === Shape.ERASER) {
+      this.ctx.globalCompositeOperation = 'destination-out';
+    } else {
+      this.ctx.globalCompositeOperation = 'source-over';
+    }
+  }
+
+  private erase(x: number, y: number) {
+    let pathInfo = this.pathManager.current();
+    pathInfo.path.lineTo(x, y);
+    this.ctx.stroke(pathInfo.path);
   }
 
   private drawCircle() {}
@@ -123,9 +137,7 @@ export class CanvasCraft {
   private redraw() {
     const pathInfoList = this.pathManager.merge();
     pathInfoList.forEach((pathInfo) => {
-      this.ctx.lineWidth = pathInfo.drawType.lineWidth;
-      this.ctx.strokeStyle = pathInfo.drawType.color;
-
+      this.changeDrawType(pathInfo.drawType);
       this.ctx.stroke(pathInfo.path);
     });
   }

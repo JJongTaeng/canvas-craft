@@ -1,5 +1,5 @@
+import { CanvasCraft, Shape } from '../lib/main';
 import './style.css';
-import { CanvasCraft } from '../lib/CanvasCraft.ts';
 
 const canvas = document.querySelector('canvas') as HTMLCanvasElement;
 const copyCanvas = document.querySelector('.copy-canvas') as HTMLCanvasElement;
@@ -10,6 +10,8 @@ const redoButton = document.querySelector('.redo') as HTMLButtonElement;
 const redButton = document.querySelector('.red') as HTMLButtonElement;
 const blueButton = document.querySelector('.blue') as HTMLButtonElement;
 const copyButton = document.querySelector('.copy') as HTMLButtonElement;
+const eraseButton = document.querySelector('.erase') as HTMLButtonElement;
+const freeButton = document.querySelector('.free') as HTMLButtonElement;
 
 const canvasCraft = new CanvasCraft(canvas);
 const copyCanvasCraft = new CanvasCraft(copyCanvas);
@@ -40,4 +42,15 @@ redoButton.addEventListener('click', (e) => {
 copyButton.addEventListener('click', () => {
   const infoList = canvasCraft.toArray();
   copyCanvasCraft.arrayToPath(infoList);
+});
+
+eraseButton.addEventListener('click', () => {
+  canvasCraft.changeDrawType({
+    shape: Shape.ERASER,
+  });
+});
+freeButton.addEventListener('click', () => {
+  canvasCraft.changeDrawType({
+    shape: Shape.FREE,
+  });
 });

@@ -17,7 +17,8 @@ export class PathManager {
         const prevDrawType = this.pathInfoList[index - 1].drawType;
         if (
           prevDrawType.color === pathInfo.drawType.color &&
-          prevDrawType.lineWidth === pathInfo.drawType.lineWidth
+          prevDrawType.lineWidth === pathInfo.drawType.lineWidth &&
+          prevDrawType.shape === pathInfo.drawType.shape
         ) {
           const prevPathInfo =
             mergedPathInfoList[mergedPathInfoList.length - 1];
@@ -38,6 +39,7 @@ export class PathManager {
 
   create(drawType: DrawType) {
     const path = new AdvancedPath2D();
+    this.undoPathList = [];
     this.pathInfoList.push({
       path,
       drawType,
