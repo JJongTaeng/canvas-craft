@@ -3,8 +3,8 @@ import { Shape } from './Shape.ts';
 import { PathManager } from './PathManager.ts';
 
 export class CanvasCraft {
-  ctx: CanvasRenderingContext2D;
-  drawType: DrawType = new DrawType();
+  private ctx: CanvasRenderingContext2D;
+  private drawType: DrawType = new DrawType();
   private pathManager = new PathManager();
   private isMousedown = false;
 
@@ -16,7 +16,7 @@ export class CanvasCraft {
   private init() {
     this.canvas.addEventListener('mouseout', this.mouseout.bind(this));
     this.canvas.addEventListener('mouseup', this.mouseup.bind(this));
-    this.canvas.addEventListener('mouseclick', this.mousedown.bind(this));
+    this.canvas.addEventListener('mousedown', this.mousedown.bind(this));
     this.canvas.addEventListener('mousemove', this.mousemove.bind(this));
   }
 
@@ -39,12 +39,43 @@ export class CanvasCraft {
     }
   }
 
+  changeDrawType(drawType: Partial<DrawType>) {
+    this.drawType = {
+      ...this.drawType,
+      ...drawType,
+    };
+    this.applyDrawType();
+  }
+
+  undo() {
+    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    this.pathManager.undo();
+    this.redraw();
+  }
+
+  redo() {
+    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    this.pathManager.redo();
+    this.redraw();
+  }
+
+  removeAll() {
+    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    this.pathManager.clear();
+    this.redraw();
+  }
+
+  private applyDrawType() {
+    this.ctx.lineWidth = this.drawType.lineWidth;
+    this.ctx.strokeStyle = this.drawType.color;
+  }
+
   private drawCircle() {}
 
   private drawPath(x: number, y: number) {
-    let path2D = this.pathManager.current();
-    path2D.lineTo(x, y);
-    this.ctx.stroke(path2D);
+    let pathInfo = this.pathManager.current();
+    pathInfo.path.lineTo(x, y);
+    this.ctx.stroke(pathInfo.path);
   }
 
   private drawSquare() {}
@@ -52,7 +83,7 @@ export class CanvasCraft {
   private drawTriangle() {}
 
   private mousedown() {
-    this.pathManager.create();
+    this.pathManager.create(this.drawType);
     this.isMousedown = true;
   }
   private mouseup() {
@@ -65,5 +96,15 @@ export class CanvasCraft {
     if (this.isMousedown) {
       this.draw(e.offsetX, e.offsetY);
     }
+  }
+
+  private redraw() {
+    const pathInfoList = this.pathManager.merge();
+    pathInfoList.forEach((pathInfo) => {
+      this.ctx.lineWidth = pathInfo.drawType.lineWidth;
+      this.ctx.strokeStyle = pathInfo.drawType.color;
+
+      this.ctx.stroke(pathInfo.path);
+    });
   }
 }

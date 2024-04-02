@@ -1,45 +1,68 @@
 import { AdvancedPath2D } from './AdvancedPath2D.ts';
+import { DrawType } from './DrawType.ts';
+
+interface PathInfo {
+  drawType: DrawType;
+  path: Path2D;
+}
 
 export class PathManager {
-  private undoPathList: Path2D[] = [];
-  private pathList: Path2D[] = [];
+  private undoPathList: PathInfo[] = [];
+  private pathInfoList: PathInfo[] = [];
 
   merge() {
-    const current = new Path2D();
-    for (const path of this.pathList) {
-      current.addPath(path);
-    }
-    return current;
+    const mergedPathInfoList: PathInfo[] = [];
+    this.pathInfoList.forEach((pathInfo, index) => {
+      if (index === 0) {
+        const path = new Path2D();
+        path.addPath(pathInfo.path);
+        mergedPathInfoList.push({ path, drawType: pathInfo.drawType });
+      } else {
+        const prevDrawType = this.pathInfoList[index - 1].drawType;
+        if (
+          prevDrawType.color === pathInfo.drawType.color &&
+          prevDrawType.lineWidth === pathInfo.drawType.lineWidth
+        ) {
+          const prevPathInfo =
+            mergedPathInfoList[mergedPathInfoList.length - 1];
+          prevPathInfo.path.addPath(pathInfo.path);
+        } else {
+          const path = new Path2D();
+          path.addPath(pathInfo.path);
+          mergedPathInfoList.push({ path, drawType: pathInfo.drawType });
+        }
+      }
+    });
+    return mergedPathInfoList;
   }
 
   current() {
-    return this.pathList[this.pathList.length - 1];
+    return this.pathInfoList[this.pathInfoList.length - 1];
   }
 
-  create() {
+  create(drawType: DrawType) {
     const path = new AdvancedPath2D();
-    this.pathList.push(path);
+    this.pathInfoList.push({
+      path,
+      drawType,
+    });
     return path;
   }
 
-  add(path: AdvancedPath2D) {
-    this.pathList.push(path);
-  }
-
   undo() {
-    if (!this.pathList.length) return;
-    let path = this.pathList.pop()!;
+    if (!this.pathInfoList.length) return;
+    let path = this.pathInfoList.pop()!;
     this.undoPathList.push(path);
   }
 
   redo() {
     if (!this.undoPathList.length) return;
     const path = this.undoPathList.pop()!;
-    this.pathList.push(path);
+    this.pathInfoList.push(path);
   }
 
   clear() {
-    this.pathList = [];
+    this.pathInfoList = [];
     this.undoPathList = [];
   }
 }
