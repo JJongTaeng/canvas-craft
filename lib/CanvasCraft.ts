@@ -14,6 +14,8 @@ export class CanvasCraft {
   }
 
   private init() {
+    this.ctx.lineCap = 'round';
+    this.ctx.lineJoin = 'round';
     this.canvas.addEventListener('mouseout', this.mouseout.bind(this));
     this.canvas.addEventListener('mouseup', this.mouseup.bind(this));
     this.canvas.addEventListener('mousedown', this.mousedown.bind(this));

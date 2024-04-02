@@ -11,6 +11,10 @@ const blueButton = document.querySelector('.blue') as HTMLButtonElement;
 
 const canvasCraft = new CanvasCraft(canvas);
 
+canvasCraft.changeDrawType({
+  lineWidth: 20,
+});
+
 redButton.addEventListener('click', () => {
   canvasCraft.changeDrawType({
     color: 'red',
