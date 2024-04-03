@@ -5,3 +5,25 @@ html, body {
 canvas {
   border: 1px solid #333;
 }
+
+#toolbar {
+  position: fixed;
+  padding: 10px;
+  top: 0px;
+  right: 0px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  background: rgba(0, 0, 0, 0.5);
+  gap: 10px;
+  width: 100px;
+}
+
+button {
+  width: 60px;
+  height: 40px;
+}
+#line-width {
+  width: 60px;
+}

@@ -5,21 +5,27 @@
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Vite App</title>
+
   </head>
   <body>
     <div id="app">
       <div>
         <canvas width="300" height="300"></canvas>
       </div>
-      <div>
+      <div id="toolbar">
         <button class="remove">제거</button>
         <button class="undo">undo</button>
         <button class="redo">redo</button>
-        <button class="red">red</button>
-        <button class="blue">blue</button>
         <button class="copy">copy</button>
-        <button class="free">free</button>
-        <button class="erase">erase</button>
+        <input type="color" id="color" value="#000000" />
+        <select id="shape-select">
+          <option>FREE</option>
+          <option>ERASER</option>
+        </select>
+        <div>
+          <input step="1" type="range" id="line-width" value="1" min="1" max="20" />
+          <label class="line-width-value">1</label>
+        </div>
       </div>
       <hr>
       <canvas class="copy-canvas" width="300" height="300"></canvas>
