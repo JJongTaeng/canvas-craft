@@ -16,6 +16,7 @@ export class CanvasCraft {
   }
 
   private init() {
+    this.canvas.style.cursor = 'crosshair';
     this.ctx.lineCap = 'round';
     this.ctx.lineJoin = 'round';
     this.canvas.addEventListener('mouseout', this.mouseout.bind(this));
@@ -47,6 +48,7 @@ export class CanvasCraft {
   }
 
   changeDrawType(drawType: Partial<DrawType>) {
+    console.debug('[change] drawType: ', drawType);
     this.drawType = {
       ...this.drawType,
       ...drawType,
@@ -123,9 +125,17 @@ export class CanvasCraft {
     this.isMousedown = true;
   }
   private mouseup() {
+    const pathInfo = this.pathManager.current();
+    pathInfo.drawType = this.drawType;
     this.isMousedown = false;
+    console.debug('[draw] pathInfo:', pathInfo);
   }
   private mouseout() {
+    const pathInfo = this.pathManager.current();
+    pathInfo.drawType = this.drawType;
+    if (this.isMousedown) {
+      console.debug('[draw] pathInfo:', pathInfo);
+    }
     this.isMousedown = false;
   }
   private mousemove(e: MouseEvent) {
@@ -136,6 +146,7 @@ export class CanvasCraft {
 
   private redraw() {
     const pathInfoList = this.pathManager.merge();
+    console.debug('[redraw] pathInfoList: ', pathInfoList);
     pathInfoList.forEach((pathInfo) => {
       this.changeDrawType(pathInfo.drawType);
       this.ctx.stroke(pathInfo.path);
