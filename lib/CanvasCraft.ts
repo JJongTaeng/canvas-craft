@@ -79,16 +79,16 @@ export class CanvasCraft {
   }
 
   arrayToPath(advancedPath2DDataList: AdvancedPath2DData[]) {
-    const pathInfoList = advancedPath2DDataList.map((advancedPath2DData) => {
-      const path2D = new AdvancedPath2D();
-      path2D.make(advancedPath2DData.commandList);
-      return {
-        path: path2D,
-        drawType: advancedPath2DData.drawType,
-      };
-    });
-
-    this.pathManager.pathInfoList = pathInfoList;
+    this.pathManager.pathInfoList = advancedPath2DDataList.map(
+      (advancedPath2DData) => {
+        const path2D = new AdvancedPath2D();
+        path2D.make(advancedPath2DData.commandList);
+        return {
+          path: path2D,
+          drawType: advancedPath2DData.drawType,
+        };
+      },
+    );
     this.redraw();
   }
 
