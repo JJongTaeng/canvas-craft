@@ -11,17 +11,18 @@
   "module": "./dist/canvas-craft.js",
   "types": "./index.d.ts",
   "exports": {
-    "types": "./index.d.ts",
+    "types": "./dist/main.d.ts",
     "import": "./dist/canvas-craft.js",
     "require": "./dist/canvas-craft.umd.cjs"
   },
   "scripts": {
     "dev": "vite",
-    "build": "tsc && vite build"
+    "build": "tsc --p ./tsconfig-build.json && vite build"
   },
   "devDependencies": {
     "typescript": "^5.4.3",
-    "vite": "^5.0.10"
+    "vite": "^5.0.10",
+    "vite-plugin-dts": "^3.8.1"
   },
   "dependencies": {
     "@types/events": "^3.0.3",
