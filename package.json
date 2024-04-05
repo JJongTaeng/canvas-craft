@@ -17,9 +17,7 @@
   },
   "scripts": {
     "dev": "vite",
-    "build": "tsc --p ./tsconfig-build.json && vite build",
-    "prepublish": "pnpm run build",
-    "publish": "pnpm publish"
+    "build": "tsc --p ./tsconfig-build.json && vite build"
   },
   "devDependencies": {
     "typescript": "^5.4.3",
