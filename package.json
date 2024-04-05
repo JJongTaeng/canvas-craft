@@ -1,7 +1,7 @@
 {
   "name": "canvas-craft",
   "private": false,
-  "version": "0.0.1",
+  "version": "0.0.2",
   "type": "module",
   "files": [
     "dist",
@@ -9,7 +9,7 @@
   ],
   "main": "./dist/canvas-craft.umd.cjs",
   "module": "./dist/canvas-craft.js",
-  "types": "./index.d.ts",
+  "types": "./dist/main.d.ts",
   "exports": {
     "types": "./dist/main.d.ts",
     "import": "./dist/canvas-craft.js",
@@ -17,7 +17,9 @@
   },
   "scripts": {
     "dev": "vite",
-    "build": "tsc --p ./tsconfig-build.json && vite build"
+    "build": "tsc --p ./tsconfig-build.json && vite build",
+    "prepublish": "pnpm run build",
+    "publish": "pnpm publish"
   },
   "devDependencies": {
     "typescript": "^5.4.3",
