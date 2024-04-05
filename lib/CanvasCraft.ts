@@ -15,7 +15,7 @@ export class CanvasCraft extends EventEmitter {
   private drawType: DrawType = new DrawType();
   private pathManager = new PathManager();
   private isMousedown = false;
-  private option: CanvasCraftOption;
+  option: CanvasCraftOption;
   constructor({
     canvas,
     option,
@@ -101,6 +101,7 @@ export class CanvasCraft extends EventEmitter {
       },
     );
     this.redraw();
+    if (this.option.fade) this.fadeRedraw();
   }
 
   private applyDrawType() {
