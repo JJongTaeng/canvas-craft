@@ -17,10 +17,10 @@ const lineWidthSlide = document.querySelector(
 ) as HTMLInputElement;
 const lineWidthValue = document.querySelector('.line-width-value');
 
-const canvasCraft = new CanvasCraft({ canvas, option: { fade: true } });
+const canvasCraft = new CanvasCraft({ canvas, option: { fade: false } });
 const copyCanvasCraft = new CanvasCraft({
   canvas: copyCanvas,
-  option: { fade: true },
+  option: { fade: false },
 });
 
 removeButton.addEventListener('click', () => {

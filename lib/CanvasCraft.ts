@@ -70,19 +70,19 @@ export class CanvasCraft {
   }
 
   undo() {
-    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    if (this.option.fade) return;
     this.pathManager.undo();
     this.redraw();
   }
 
   redo() {
-    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    if (this.option.fade) return;
     this.pathManager.redo();
     this.redraw();
   }
 
   removeAll() {
-    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    if (this.option.fade) return;
     this.pathManager.clear();
     this.redraw();
   }
@@ -141,14 +141,20 @@ export class CanvasCraft {
   private mouseup() {
     const pathInfo = this.pathManager.current();
     pathInfo.drawType = this.drawType;
+    if (this.option.fade) {
+      this.fadeRedraw();
+    }
     this.isMousedown = false;
     console.debug('[draw] pathInfo:', pathInfo);
   }
   private mouseout() {
     const pathInfo = this.pathManager.current();
-    pathInfo.drawType = this.drawType;
     if (this.isMousedown) {
+      pathInfo.drawType = this.drawType;
       console.debug('[draw] pathInfo:', pathInfo);
+      if (this.option.fade) {
+        this.fadeRedraw();
+      }
     }
     this.isMousedown = false;
   }
@@ -160,10 +166,44 @@ export class CanvasCraft {
 
   private redraw() {
     const pathInfoList = this.pathManager.merge();
+    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
     console.debug('[redraw] pathInfoList: ', pathInfoList);
     pathInfoList.forEach((pathInfo) => {
       this.changeDrawType(pathInfo.drawType);
       this.ctx.stroke(pathInfo.path);
     });
+  }
+
+  private fadeRedraw() {
+    const pathInfoList = this.pathManager.merge();
+    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    console.debug('[fade redraw] pathInfoList: ', pathInfoList);
+    const startTime = performance.now();
+    const fade = (currentTime: number) => {
+      this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+      const diff = currentTime - startTime;
+      const progress = diff / 2000;
+      pathInfoList.forEach((pathInfo) => {
+        this.ctx.globalAlpha = 1 - progress;
+        this.ctx.stroke(pathInfo.path);
+      });
+
+      if (this.isMousedown) {
+        this.redraw();
+        return;
+      }
+      if (progress < 1) {
+        requestAnimationFrame(fade);
+      } else {
+        // 애니메이션 종료
+        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height); // 마지막으로 Canvas 지우기
+        this.pathManager.clear();
+        this.changeDrawType({
+          ...this.drawType,
+        });
+      }
+    };
+
+    requestAnimationFrame(fade);
   }
 }
