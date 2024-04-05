@@ -17,8 +17,11 @@ const lineWidthSlide = document.querySelector(
 ) as HTMLInputElement;
 const lineWidthValue = document.querySelector('.line-width-value');
 
-const canvasCraft = new CanvasCraft(canvas);
-const copyCanvasCraft = new CanvasCraft(copyCanvas);
+const canvasCraft = new CanvasCraft({ canvas, option: { fade: true } });
+const copyCanvasCraft = new CanvasCraft({
+  canvas: copyCanvas,
+  option: { fade: true },
+});
 
 removeButton.addEventListener('click', () => {
   canvasCraft.removeAll();
@@ -47,7 +50,7 @@ shapeSelect.addEventListener('change', (e) => {
 colorSelect.addEventListener('change', (e) => {
   const target = e.target! as any;
   canvasCraft.changeDrawType({
-    color: target.value,
+    strokeStyle: target.value,
   });
 });
 

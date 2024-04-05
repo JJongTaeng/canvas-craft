@@ -16,7 +16,7 @@ export class PathManager {
       } else {
         const prevDrawType = this.pathInfoList[index - 1].drawType;
         if (
-          prevDrawType.color === pathInfo.drawType.color &&
+          prevDrawType.strokeStyle === pathInfo.drawType.strokeStyle &&
           prevDrawType.lineWidth === pathInfo.drawType.lineWidth &&
           prevDrawType.shape === pathInfo.drawType.shape
         ) {

@@ -4,13 +4,26 @@ import { PathManager } from './PathManager.ts';
 import { AdvancedPath2DData } from './type.ts';
 import { AdvancedPath2D } from './AdvancedPath2D.ts';
 
+interface CanvasCraftOption {
+  fade: boolean;
+}
+
 export class CanvasCraft {
+  private canvas: HTMLCanvasElement;
   private ctx: CanvasRenderingContext2D;
   private drawType: DrawType = new DrawType();
   private pathManager = new PathManager();
   private isMousedown = false;
-
-  constructor(private canvas: HTMLCanvasElement) {
+  private option: CanvasCraftOption;
+  constructor({
+    canvas,
+    option,
+  }: {
+    canvas: HTMLCanvasElement;
+    option: CanvasCraftOption;
+  }) {
+    this.option = option;
+    this.canvas = canvas;
     this.ctx = this.canvas.getContext('2d')!;
     this.init();
   }
@@ -94,7 +107,8 @@ export class CanvasCraft {
 
   private applyDrawType() {
     this.ctx.lineWidth = this.drawType.lineWidth;
-    this.ctx.strokeStyle = this.drawType.color;
+    this.ctx.strokeStyle = this.drawType.strokeStyle;
+    this.ctx.globalAlpha = this.drawType.globalAlpha;
     if (this.drawType.shape === Shape.ERASER) {
       this.ctx.globalCompositeOperation = 'destination-out';
     } else {
