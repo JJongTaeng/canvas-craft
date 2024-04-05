@@ -40,21 +40,23 @@ export class CanvasCraft {
 
   draw(x: number, y: number) {
     switch (this.drawType.shape) {
-      case Shape.CIRCLE:
-        this.drawCircle();
-        break;
       case Shape.FREE:
         this.drawPath(x, y);
-        break;
-      case Shape.SQUARE:
-        this.drawSquare();
-        break;
-      case Shape.TRIANGLE:
-        this.drawTriangle();
         break;
       case Shape.ERASER:
         this.erase(x, y);
         break;
+      // case Shape.CIRCLE:
+      //   this.drawCircle();
+      //   break;
+      //
+      // case Shape.SQUARE:
+      //   this.drawSquare();
+      //   break;
+      // case Shape.TRIANGLE:
+      //   this.drawTriangle();
+      //   break;
+
       default:
         throw new Error('Invaliad Draw Type');
     }
