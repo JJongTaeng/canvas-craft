@@ -23,6 +23,19 @@ const copyCanvasCraft = new CanvasCraft({
   option: { fade: false },
 });
 
+canvasCraft.on('drawstart', (param) => {
+  console.log(`drawstart = `, param);
+});
+canvasCraft.on('drawing', (param) => {
+  console.log(`drawing = `, param);
+});
+canvasCraft.on('drawend', (param) => {
+  console.log(`drawend = `, param);
+});
+canvasCraft.on('fadeend', (param) => {
+  console.log(`fadeend = `, param);
+});
+
 removeButton.addEventListener('click', () => {
   canvasCraft.removeAll();
 });

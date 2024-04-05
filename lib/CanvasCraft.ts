@@ -3,12 +3,13 @@ import { Shape } from './Shape.ts';
 import { PathManager } from './PathManager.ts';
 import { AdvancedPath2DData } from './type.ts';
 import { AdvancedPath2D } from './AdvancedPath2D.ts';
+import { EventEmitter } from 'events';
 
 interface CanvasCraftOption {
   fade: boolean;
 }
 
-export class CanvasCraft {
+export class CanvasCraft extends EventEmitter {
   private canvas: HTMLCanvasElement;
   private ctx: CanvasRenderingContext2D;
   private drawType: DrawType = new DrawType();
@@ -22,6 +23,7 @@ export class CanvasCraft {
     canvas: HTMLCanvasElement;
     option: CanvasCraftOption;
   }) {
+    super();
     this.option = option;
     this.canvas = canvas;
     this.ctx = this.canvas.getContext('2d')!;
@@ -39,6 +41,11 @@ export class CanvasCraft {
   }
 
   draw(x: number, y: number) {
+    this.emit('drawing', {
+      canvas: this.canvas,
+      ctx: this.ctx,
+      pathInfo: this.pathManager.current(),
+    });
     switch (this.drawType.shape) {
       case Shape.FREE:
         this.drawPath(x, y);
@@ -46,17 +53,6 @@ export class CanvasCraft {
       case Shape.ERASER:
         this.erase(x, y);
         break;
-      // case Shape.CIRCLE:
-      //   this.drawCircle();
-      //   break;
-      //
-      // case Shape.SQUARE:
-      //   this.drawSquare();
-      //   break;
-      // case Shape.TRIANGLE:
-      //   this.drawTriangle();
-      //   break;
-
       default:
         throw new Error('Invaliad Draw Type');
     }
@@ -124,46 +120,51 @@ export class CanvasCraft {
     this.ctx.stroke(pathInfo.path);
   }
 
-  private drawCircle() {}
-
   private drawPath(x: number, y: number) {
     let pathInfo = this.pathManager.current();
     pathInfo.path.lineTo(x, y);
     this.ctx.stroke(pathInfo.path);
   }
 
-  private drawSquare() {}
-
-  private drawTriangle() {}
-
   private mousedown() {
-    this.pathManager.create(this.drawType);
-    this.isMousedown = true;
+    this.drawstart();
   }
   private mouseup() {
-    const pathInfo = this.pathManager.current();
-    pathInfo.drawType = this.drawType;
-    if (this.option.fade) {
-      this.fadeRedraw();
-    }
-    this.isMousedown = false;
-    console.debug('[draw] pathInfo:', pathInfo);
+    this.drawend();
   }
   private mouseout() {
-    const pathInfo = this.pathManager.current();
+    this.drawend();
+  }
+  private mousemove(e: MouseEvent) {
     if (this.isMousedown) {
+      this.draw(e.offsetX, e.offsetY);
+    }
+  }
+
+  private drawstart() {
+    this.pathManager.create(this.drawType);
+    const pathInfo = this.pathManager.current();
+    this.emit('drawstart', {
+      pathInfo,
+    });
+    this.isMousedown = true;
+  }
+
+  private drawend() {
+    const pathInfo = this.pathManager.current();
+
+    if (this.isMousedown) {
+      this.emit('drawend', {
+        pathInfo,
+      });
       pathInfo.drawType = this.drawType;
       console.debug('[draw] pathInfo:', pathInfo);
       if (this.option.fade) {
         this.fadeRedraw();
       }
     }
+
     this.isMousedown = false;
-  }
-  private mousemove(e: MouseEvent) {
-    if (this.isMousedown) {
-      this.draw(e.offsetX, e.offsetY);
-    }
   }
 
   private redraw() {
@@ -203,6 +204,7 @@ export class CanvasCraft {
         this.changeDrawType({
           ...this.drawType,
         });
+        this.emit('fadeend');
       }
     };
 
